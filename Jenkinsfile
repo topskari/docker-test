@@ -57,7 +57,7 @@ pipeline {
     post {
                 always {
                     recordCoverage(
-                        tools: [[parser: 'JACOCO', pattern: '/target/site/jacoco/jacoco.xml']],
+                        tools: [[parser: 'JACOCO', pattern: '**/target/site/jacoco/jacoco.xml']],
                         checksAnnotationScope: 'ALL_LINES',
                         enabledForFailure: true,
                         failOnError: true,
