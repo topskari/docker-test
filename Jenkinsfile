@@ -2,41 +2,36 @@ pipeline {
     agent any
      environment {
             // Define Docker Hub credentials ID
-            DOCKERHUB_CREDENTIALS_ID = 'Docker_Hub'
+            DOCKERHUB_CREDENTIALS_ID = 'Docker-hub-credentials'
             // Define Docker Hub repository name
-            DOCKERHUB_REPO = 'amirdirin/week7_inclass_test1'
+            DOCKERHUB_REPO = 'topskari/docker-test'
             // Define Docker image tag
             DOCKER_IMAGE_TAG = 'latest_v1'
         }
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/ADirin/SEP1_Week7_Spring2025_Inclass_solution.git'
+                git 'https://github.com/topskari/docker-test'
             }
         }
         stage('Build') {
             steps {
-                sh 'mvn clean install'
+                bat 'mvn clean install'
             }
         }
         stage('Test') {
             steps {
-                sh 'mvn test'
+                bat 'mvn test'
             }
         }
         stage('Code Coverage') {
             steps {
-                sh 'mvn jacoco:report'
+                bat 'mvn jacoco:report'
             }
         }
         stage('Publish Test Results') {
             steps {
                 junit '**/target/surefire-reports/*.xml'
-            }
-        }
-        stage('Publish Coverage Report') {
-            steps {
-                jacoco()
             }
         }
 
@@ -59,4 +54,16 @@ pipeline {
                     }
                 }
     }
+    post {
+                always {
+                    recordCoverage(
+                        tools: [[parser: 'JACOCO', pattern: 'Brainboost/target/site/jacoco/jacoco.xml']],
+                        checksAnnotationScope: 'ALL_LINES',
+                        enabledForFailure: true,
+                        failOnError: true,
+                        sourceCodeRetention: 'LAST_BUILD'
+                    )
+                }
+            }
+        }
 }
