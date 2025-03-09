@@ -45,8 +45,8 @@ pipeline {
         stage('Push Docker Image to Docker Hub') {
             steps {
                 script {
-                    withCredentials([string(credentialsId: DOCKERHUB_CREDENTIALS_ID, variable: 'DOCKERHUB_PASSWORD')]) {
-                        bat "docker login -u topskari -p %DOCKERHUB_PASSWORD%"
+                    withCredentials([usernamePassword(credentialsId: DOCKERHUB_CREDENTIALS_ID, passwordVariable: 'DOCKERHUB_PASSWORD', usernameVariable: 'DOCKERHUB_USERNAME')]) {
+                        bat "docker login -u %DOCKERHUB_USERNAME% -p %DOCKERHUB_PASSWORD%"
                         bat "docker push ${DOCKERHUB_REPO}:${DOCKER_IMAGE_TAG}"
                     }
                 }
